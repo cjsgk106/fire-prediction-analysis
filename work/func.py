@@ -39,7 +39,7 @@ def bldng_archtctr_pp(data):
     data = data.drop('bldng_archtctr', axis=1)
 
 def fr_wthr_fclt_pp(data):
-    data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal')
+    data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal') # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
 
 def tbc_pp(data):
     # 담배 소매점과의 최소 거리
@@ -168,7 +168,7 @@ def lnd_us_sttn_nm_modi1(data) :
             ind.append('특수토지')
         else :
             ind.append(i)
-data.lnd_us_sttn_nm = ind
+    data.lnd_us_sttn_nm = ind
 
 def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '목'), 'lnd_us_sttn_nm'] = '임야'
