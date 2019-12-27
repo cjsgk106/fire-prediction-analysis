@@ -192,6 +192,7 @@ def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isnull()) & (data['bldng_us_clssfctn'] == '공공용'), 'lnd_us_sttn_nm'] = '공공용지'
     return data
 
+
 def emd_nm_modi(data) :
     data['emd_nm'] = data['emd_nm'].astype(str).apply(lambda x : x[4:] if x[:4]=='경상남도' else x )
     data['emd_nm_big'] = data['emd_nm'].apply(lambda x : x.split()[0] if x.split()[0]!='창원시' else x.split()[0]+x.split()[1])
