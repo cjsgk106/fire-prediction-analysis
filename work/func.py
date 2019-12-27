@@ -139,7 +139,7 @@ def rgnl_ar_nm_modi(data) :
     data.loc[(data['rgnl_ar_nm'].isnull()) & (data['bldng_us_clssfctn'] == '공업용'), 'rgnl_ar_nm'] = 2 #공업지역
     data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '자연녹지지역'), 'rgnl_ar_nm' ] = 3  #녹지지역
     data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '제1종일반주거지역'), 'rgnl_ar_nm' ] = 0  #주거지역
-    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '지정되지않음'), 'rgnl_ar_nm' ] = '용도미지정'  #지정되지않음
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '지정되지않음'), 'rgnl_ar_nm' ] = 7  #지정되지않음
 
     return data
 # categorical type으로 변경
