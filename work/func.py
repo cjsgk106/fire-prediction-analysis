@@ -112,4 +112,15 @@ def bldng_clssfctn_pp(data):
     cul_idx = data[(data['lnd_us_sttn_nm']=='운동장등') & (data['bldng_us_clssfctn'].isnull()) & ((data['rgnl_ar_nm'].str.contains('녹지지역')))].index
     data.loc[cul_idx, 'bldng_us_clssfctn']='문교사회용'
     
+    #기타
+    data['bldng_us_clssfctn']=data['bldng_us_clssfctn'].fillna('기타')
+    
+    return data
+
+     #건축면적 <= 건물 연면적 아닌 데이터 행 삭제.
+def ar_pp(data):
+    data=data[data['bldng_ar']<data['ttl_ar']]                         #건물면적 < 건물 연면적
+    data.bldng_ar[(data.bldng_us.notnull())&(data.bldng_ar==0)]=135    #건물면적이 0인데 건물이 존재 -> 건물면적값 중간값(135) 대입
+    data.lnd_ar[(data.bldng_us.notnull()) & (data.lnd_ar==0)]=230      #토지면적이 0인데 건물이 존재 -> 토지면적값 중간값(230) 대입
+  
     return data
