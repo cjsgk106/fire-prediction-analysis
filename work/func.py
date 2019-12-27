@@ -124,3 +124,88 @@ def ar_pp(data):
     data.lnd_ar[(data.bldng_us.notnull()) & (data.lnd_ar==0)]=230      #토지면적이 0인데 건물이 존재 -> 토지면적값 중간값(230) 대입
   
     return data
+
+def rgnl_ar_nm_modi(data) : 
+    data.loc[data['rgnl_ar_nm'].str.contains('주거지역', na = False), 'rgnl_ar_nm'] = 0  # 주거지역
+    data.loc[data['rgnl_ar_nm'].str.contains('상업지역', na = False), 'rgnl_ar_nm'] = 1  # 상업지역
+    data.loc[data['rgnl_ar_nm'].str.contains('공업지역', na = False), 'rgnl_ar_nm'] = 2  # 공업지역
+    data.loc[data['rgnl_ar_nm'].str.contains('녹지지역', na = False), 'rgnl_ar_nm'] = 3  # 녹지지역
+    data.loc[data['rgnl_ar_nm'].str.contains('관리지역', na = False), 'rgnl_ar_nm'] = 4  # 관리지역
+    data.loc[data['rgnl_ar_nm'].str.contains('농림지역', na = False), 'rgnl_ar_nm'] = 5  # 농림지역
+    data.loc[data['rgnl_ar_nm'].str.contains('자연환경보전지역', na = False), 'rgnl_ar_nm'] = 6  # 자연환경보전지역
+    data.loc[data['rgnl_ar_nm'].str.contains('용도미지정', na = False), 'rgnl_ar_nm'] = 7  # 용도미지정
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['bldng_us_clssfctn'] == '주거용'), 'rgnl_ar_nm'] = 0 # 주거지역
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['bldng_us_clssfctn'] == '상업용'), 'rgnl_ar_nm'] = 1 #상업지역
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['bldng_us_clssfctn'] == '공업용'), 'rgnl_ar_nm'] = 2 #공업지역
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '자연녹지지역'), 'rgnl_ar_nm' ] = 3  #녹지지역
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '제1종일반주거지역'), 'rgnl_ar_nm' ] = 0  #주거지역
+    data.loc[(data['rgnl_ar_nm'].isnull()) & (data['rgnl_ar_nm2'] == '지정되지않음'), 'rgnl_ar_nm' ] = '용도미지정'  #지정되지않음
+
+    return data
+# categorical type으로 변경
+
+def lnd_us_sttn_nm_modi1(data) :
+    
+    ind = []
+    for i in data.lnd_us_sttn_nm :
+        if (i == '단독') | (i == '연립') | (i == '다세대') | (i == '아파트') | (i == '주거나지') | (i == '주거기타'):
+            ind.append('주거용')
+        elif (i == '상업용') | (i == '업무용') | (i == '상업나지') | (i == '상업기타') | (i == '콘도미니엄') :
+            ind.append('상업.업무용')
+        elif (i =='주상용') | (i == '주상나지') | (i == '주상기타') :
+            ind.append('주.상복합용')
+        elif (i == '공업용') | (i == '공업나지') | (i == '공업기타'):
+            ind.append('공업용')
+        elif (i == '전') | (i == '과수원') | (i == '전기타') :
+            ind.append('전')
+        elif (i == '답') | (i == '답기타') :
+            ind.append('답')
+        elif (i == '조림') | (i == '자연림') | (i == '토지임야') | (i == '목장용지') | (i == '임야기타'):
+            ind.append('임야')
+        elif (i == '도로등') | (i == '하천등') | (i == '공원등') | (i == '운동장등') | (i == '주차장등') | (i == '위험시설') | (i == '유해.혐오시설') | (i == '발전소') : 
+            ind.append('공공용지')
+        elif (i == '유원지') | (i == '공원묘지') | (i == '골프장 대중제') | (i == '스키장') | (i == '특수기타') | (i == '골프장 회원제') | (i == '고속도로휴게소') | (i == '여객자동차터미널') : 
+            ind.append('특수토지')
+        else :
+            ind.append(i)
+data.lnd_us_sttn_nm = ind
+
+def lnd_us_sttn_nm_modi2(data) :
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '목'), 'lnd_us_sttn_nm'] = '임야'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '도'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '천'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '구'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '유'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '제'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '장'), 'lnd_us_sttn_nm'] = '공업용'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '답'), 'lnd_us_sttn_nm'] = '답'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '전'), 'lnd_us_sttn_nm'] = '전'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '차'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '공'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '묘'), 'lnd_us_sttn_nm'] = '공공용지'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '임'), 'lnd_us_sttn_nm'] = '임야'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '과'), 'lnd_us_sttn_nm'] = '전'
+    data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '원'), 'lnd_us_sttn_nm'] = '특수토지'
+    data.loc[(data['lnd_us_sttn_nm'].isnull()) & (data['bldng_us_clssfctn'] == '주거용'), 'lnd_us_sttn_nm'] = '주거용'
+    data.loc[(data['lnd_us_sttn_nm'].isnull()) & (data['bldng_us_clssfctn'] == '상업용'), 'lnd_us_sttn_nm'] = '상업용'
+    data.loc[(data['lnd_us_sttn_nm'].isnull()) & (data['bldng_us_clssfctn'] == '공업용'), 'lnd_us_sttn_nm'] = '공업용'
+    data.loc[(data['lnd_us_sttn_nm'].isnull()) & (data['bldng_us_clssfctn'] == '공공용'), 'lnd_us_sttn_nm'] = '공공용지'
+    return data
+
+def emd_nm_modi(data) :
+    data['emd_nm'] = data['emd_nm'].astype(str).apply(lambda x : x[4:] if x[:4]=='경상남도' else x )
+    data['emd_nm_big'] = data['emd_nm'].apply(lambda x : x.split()[0] if x.split()[0]!='창원시' else x.split()[0]+x.split()[1])
+    data['emd_nm_small'] = data['emd_nm'].apply(lambda x : x.split()[1] if (x.split()[0]!='창원시') & (x!='nan') else x)
+    data['emd_nm_small'] = data['emd_nm_small'].apply(lambda x : x.split()[2] if x.split()[0]=='창원시' else x )
+
+def emd_nm_modi2(data) :
+    data['emd_nm'] = data['emd_nm'].astype(str).apply(lambda x : x[5:] if x[:4]=='경상남도' else x )
+    data['emd_nm_big'] = data['emd_nm'].apply(lambda x : x.split()[0])
+    data['emd_nm_small'] = data['emd_nm'].apply(lambda x : x.split()[1])
+
+def hm_cnt_modi(data) :
+    hm_cnt_mean = round(data.groupby('emd_nm_small')['hm_cnt'].mean())
+    for i in range(0,len(hm_cnt_mean)) :
+        data.loc[(data['hm_cnt'].isnull()) & (data['emd_nm_small'] == hm_cnt_mean.keys()[i]), 'hm_cnt'] = hm_cnt_mean.values[i]
+
+
