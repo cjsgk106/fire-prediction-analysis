@@ -168,7 +168,7 @@ def lnd_us_sttn_nm_modi1(data) :
             ind.append('특수토지')
         else :
             ind.append(i)
-data.lnd_us_sttn_nm = ind
+    data.lnd_us_sttn_nm = ind
 
 def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '목'), 'lnd_us_sttn_nm'] = '임야'
