@@ -39,8 +39,7 @@ def bldng_archtctr_pp(data):
     data = data.drop('bldng_archtctr', axis=1)
 
 def fr_wthr_fclt_pp(data):
-    data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal')
-    # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
+    data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal') # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
 
 def tbc_pp(data):
     # 담배 소매점과의 최소 거리
@@ -222,4 +221,71 @@ def hmdt_modi(data) :
     data['hmdt']=data['hmdt'].fillna(method='bfill')
 
 
+#건물 승인 연도별 시각화
+data['blng_y']=data.loc[:,'dt_of_athrztn'].astype('str').str[:4]
+data['blng_y']=data['blng_y'].astype('int')
+data['bldng_y']=data['blng_y'].apply(lambda x: 1960 if (x>1959) & (x<1970) else x)
+data['blng_y']=data['blng_y'].apply(lambda x: 1970 if (x>1969) & (x<1980) else x)
+data['blng_y']=data['blng_y'].apply(lambda x: 1980 if (x>1979) & (x<1990) else x)
+data['blng_y']=data['blng_y'].apply(lambda x: 1990 if (x>1989) & (x<2000) else x)
+data['blng_y']=data['blng_y'].apply(lambda x: 2000 if (x>1999) & (x<2010) else x)
+data['blng_y']=data['blng_y'].apply(lambda x: 2010 if (x>2009) & (x<2020) else x)
 
+d1=data[['blng_y','fr_yn']]
+d2=d1.set_index('blng_y')
+
+d1['fr_yn']=np.where(d1.fr_yn=='Y',1,0)
+d1=d1.pivot_table(index='blng_y', aggfunc='sum')
+d2=d1.pivot_table(index='blng_y',aggfunc='sum')
+
+d2.plot()
+plt.xlim([1950,2020])
+
+#계절별 화재빈도 시각화
+df1=data[['fr_yn','season']]
+df2=df1.set_index('season')
+
+df1['fr_yn1']=np.where(df1.fr_yn=='Y',1,0)
+df1=df1.drop('fr_yn',axis=1)
+
+df2=df1.pivot_table(index='season', aggfunc='sum')
+df2.plot.bar()
+
+
+#건물용도별 화재 시각화
+da1=data[['bldng_us2','fr_yn']]
+da1['fr_yn1']=np.where(da1.fr_yn=='Y',1,0)
+da1.drop('fr_yn',axis=1)
+da2=da1.pivot_table(index='bldng_us2', aggfunc='sum')
+da2.plot.barh()
+
+#건물구조별 화재 시각화
+dq1=data[['bldng_archtctr2','fr_yn']]
+dq1['fr_yn1']=np.where(dq1.fr_yn=='Y',1,0)
+dq1=dq1.drop('fr_yn',axis=1)
+dq2=dq1.pivot_table(index='bldng_archtctr2', aggfunc='sum')
+dq2.plot.barh()
+
+
+#건물 용도명 화재 시각화
+dw1=data[['bldng_us_clssfctn','fr_yn']]
+dw1['fr_yn1']=np.where(dw1.fr_yn=='Y',1,0)
+dw1=dw1.drop('fr_yn',axis=1)
+dw2=dw1.pivot_table(index='bldng_us_clssfctn', aggfunc='sum')
+dw2.plot.barh()
+
+
+#건물면적 범위 화재 시각화 
+
+data['bldng_ar1']=data['bldng_ar1'].astype('int')
+data['bldng_ar1']=data['bldng_ar'].apply(lambda x: 100 if (x<101) else x)
+data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 300 if (x>101) & (x<301)   else x)
+data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 600 if (x>301) & (x<601)   else x)
+data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 1000 if (x>601) & (x<1001) else x)
+data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 1000 if(x>1001) &(x>1000)  else x)
+
+de1=data[['bldng_ar1','fr_yn']]
+de1['fr_yn1']=np.where(de1.fr_yn=='Y',1,0)
+de1.drop('fr_yn',axis=1)
+de2=de1.pivot_table(index='bldng_ar1', aggfunc='sum')
+de2.plot.bar()
