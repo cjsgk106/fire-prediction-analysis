@@ -39,7 +39,15 @@ def bldng_archtctr_pp(data):
     data = data.drop('bldng_archtctr', axis=1)
 
 def fr_wthr_fclt_pp(data):
+<<<<<<< HEAD
     data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal') # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
+=======
+    data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal')
+<<<<<<< HEAD
+=======
+    # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
+>>>>>>> 9d6497c031da65cabdd978c7f52a24362d368a1b
+>>>>>>> 70963641c1583e3af16f2ccb36401e431262ae5e
 
 def tbc_pp(data):
     # 담배 소매점과의 최소 거리
@@ -168,7 +176,7 @@ def lnd_us_sttn_nm_modi1(data) :
             ind.append('특수토지')
         else :
             ind.append(i)
-    data.lnd_us_sttn_nm = ind
+data.lnd_us_sttn_nm = ind
 
 def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '목'), 'lnd_us_sttn_nm'] = '임야'
@@ -220,6 +228,7 @@ def hmdt_modi(data) :
     data=data.sort_values(by='dt_of_fr')   
     data['hmdt']=data['hmdt'].fillna(method='bfill')
 
+<<<<<<< HEAD
 
 #건물 승인 연도별 시각화
 data['blng_y']=data.loc[:,'dt_of_athrztn'].astype('str').str[:4]
@@ -289,3 +298,8 @@ de1['fr_yn1']=np.where(de1.fr_yn=='Y',1,0)
 de1.drop('fr_yn',axis=1)
 de2=de1.pivot_table(index='bldng_ar1', aggfunc='sum')
 de2.plot.bar()
+=======
+def prcpttn_modi(data) :
+    data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
+    data['prcpttn'].fillna(0)
+>>>>>>> 70963641c1583e3af16f2ccb36401e431262ae5e
