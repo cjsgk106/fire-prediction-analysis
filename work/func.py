@@ -20,6 +20,7 @@ def season_pp(data):
     data['season'] = data['season'].apply(lambda x : '여름'  if (x ==6) | (x==7) | (x==8)  else x)
     data['season'] = data['season'].apply(lambda x : '가을'  if (x ==9) | (x==10) | (x==11)  else x)
     data['season'] = data['season'].apply(lambda x : '겨울'  if (x ==12) | (x==1) | (x==2)  else x)
+    return data
 
 def flr_pp(data):
     data['mean_grndflr_per_bldng'] = data['ttl_grnd_flr'] / data['bldng_cnt']
@@ -31,16 +32,19 @@ def bldng_us_pp(data):
     list1 = ['공동주택','단독주택','제1종근린생활시설','제2종근린생활시설','근린생활시설']
     data['bldng_us2'] = ['상대적분류' if w in list1 else '절대적분류' for w in data['bldng_us']]
     data = data.drop('bldng_us', axis=1)
+    return data
     
 def bldng_archtctr_pp(data):
     list1 = ['통나무구조','일반목구조','목구조','기타구조']
     list2 = ['기타조적구조','블록구조','석구조','벽돌구조','조적구조']
     data['bldng_archtctr2'] = ['목구조' if w in list1 else '석구조' if w in list2 else '철골콘크리트구조' for w in data['bldng_archtctr']]
     data = data.drop('bldng_archtctr', axis=1)
+    return data
 
 def fr_wthr_fclt_pp(data):
     data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal')
     # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
+    return data
 
 def tbc_pp(data):
     # 담배 소매점과의 최소 거리
@@ -54,6 +58,7 @@ def tbc_pp(data):
     data.loc[(data['tbc_rtl_str_dstnc'] > 527) & (data['tbc_rtl_str_dstnc'] <= 2184), 'tbc_rtl_str_dstnc'] = 1
     data.loc[(data['tbc_rtl_str_dstnc'] > 2184) & (data['tbc_rtl_str_dstnc'] <= 4958), 'tbc_rtl_str_dstnc'] = 2
     data.loc[(data['tbc_rtl_str_dstnc'] > 4958), 'tbc_rtl_str_dstnc'] = 3
+    return data
     
 def bldng_clssfctn_pp(data):
     ## 주거용
@@ -170,6 +175,7 @@ def lnd_us_sttn_nm_modi1(data) :
         else :
             ind.append(i)
     data.lnd_us_sttn_nm = ind
+    return data
 
 def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '목'), 'lnd_us_sttn_nm'] = '임야'
@@ -199,15 +205,19 @@ def emd_nm_modi(data) :
     data['emd_nm_big'] = data['emd_nm'].apply(lambda x : x.split()[0] if x.split()[0]!='창원시' else x.split()[0]+x.split()[1])
     data['emd_nm_small'] = data['emd_nm'].apply(lambda x : x.split()[1] if (x.split()[0]!='창원시') & (x!='nan') else x)
     data['emd_nm_small'] = data['emd_nm_small'].apply(lambda x : x.split()[2] if x.split()[0]=='창원시' else x )
+    return data
 
 def hm_cnt_modi(data) :
     hm_cnt_mean = round(data.groupby('emd_nm_small')['hm_cnt'].mean())
     for i in range(0,len(hm_cnt_mean)) :
         data.loc[(data['hm_cnt'].isnull()) & (data['emd_nm_small'] == hm_cnt_mean.keys()[i]), 'hm_cnt'] = hm_cnt_mean.values[i]
+    return data
 
 def wnd_modi(data) :
-    data=data.drop(['wnd_spd','wnd_drctn'])
+    data=data.drop(['wnd_spd','wnd_drctn'], axis=1)
+    return data
 
 def prcpttn_modi(data) :
     data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
-    data['prcpttn'].fillna(0)
+    data['prcpttn'] = data['prcpttn'].fillna(0)
+    return data
