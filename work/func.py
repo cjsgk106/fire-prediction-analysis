@@ -213,18 +213,6 @@ def hm_cnt_modi(data) :
         data.loc[(data['hm_cnt'].isnull()) & (data['emd_nm_small'] == hm_cnt_mean.keys()[i]), 'hm_cnt'] = hm_cnt_mean.values[i]
     return data
 
-def hmdt_modi(data) :
-    data=data.sort_values(by='dt_of_fr')  
-    data['hmdt']=data['hmdt'].fillna(method='bfill')
-
-
-
-
-
-def wnd_modi(data) :
-    data=data.drop(['wnd_spd','wnd_drctn'], axis=1)
-    return data
-
 def prcpttn_modi(data) :
     data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
     data['prcpttn'] = data['prcpttn'].fillna(0)
