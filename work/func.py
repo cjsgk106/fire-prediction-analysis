@@ -20,7 +20,6 @@ def season_pp(data):
     data['season'] = data['season'].apply(lambda x : '여름'  if (x ==6) | (x==7) | (x==8)  else x)
     data['season'] = data['season'].apply(lambda x : '가을'  if (x ==9) | (x==10) | (x==11)  else x)
     data['season'] = data['season'].apply(lambda x : '겨울'  if (x ==12) | (x==1) | (x==2)  else x)
-    return data
 
 def flr_pp(data):
     data['mean_grndflr_per_bldng'] = data['ttl_grnd_flr'] / data['bldng_cnt']
@@ -32,19 +31,16 @@ def bldng_us_pp(data):
     list1 = ['공동주택','단독주택','제1종근린생활시설','제2종근린생활시설','근린생활시설']
     data['bldng_us2'] = ['상대적분류' if w in list1 else '절대적분류' for w in data['bldng_us']]
     data = data.drop('bldng_us', axis=1)
-    return data
     
 def bldng_archtctr_pp(data):
     list1 = ['통나무구조','일반목구조','목구조','기타구조']
     list2 = ['기타조적구조','블록구조','석구조','벽돌구조','조적구조']
     data['bldng_archtctr2'] = ['목구조' if w in list1 else '석구조' if w in list2 else '철골콘크리트구조' for w in data['bldng_archtctr']]
     data = data.drop('bldng_archtctr', axis=1)
-    return data
 
 def fr_wthr_fclt_pp(data):
     data['legality'] = np.where((data['fr_wthr_fclt_dstnc']>140) & (data['dt_of_athrztn']>1992), 'illegal', 'legal')
     # 소방법 제44조에 따라 1992년 개정 이후에 최소 140m이내에 소방용수시설 필요.
-    return data
 
 def tbc_pp(data):
     # 담배 소매점과의 최소 거리
@@ -58,7 +54,6 @@ def tbc_pp(data):
     data.loc[(data['tbc_rtl_str_dstnc'] > 527) & (data['tbc_rtl_str_dstnc'] <= 2184), 'tbc_rtl_str_dstnc'] = 1
     data.loc[(data['tbc_rtl_str_dstnc'] > 2184) & (data['tbc_rtl_str_dstnc'] <= 4958), 'tbc_rtl_str_dstnc'] = 2
     data.loc[(data['tbc_rtl_str_dstnc'] > 4958), 'tbc_rtl_str_dstnc'] = 3
-    return data
     
 def bldng_clssfctn_pp(data):
     ## 주거용
@@ -136,7 +131,6 @@ def rgnl_ar_nm_modi(data) :
     data.loc[data['rgnl_ar_nm'].str.contains('상업지역', na = False), 'rgnl_ar_nm'] = 1  # 상업지역
     data.loc[data['rgnl_ar_nm'].str.contains('공업지역', na = False), 'rgnl_ar_nm'] = 2  # 공업지역
     data.loc[data['rgnl_ar_nm'].str.contains('녹지지역', na = False), 'rgnl_ar_nm'] = 3  # 녹지지역
-    data.loc[data['rgnl_ar_nm'].str.contains('개발제한구역', na = False), 'rgnl_ar_nm'] = 3  # 녹지지역
     data.loc[data['rgnl_ar_nm'].str.contains('관리지역', na = False), 'rgnl_ar_nm'] = 4  # 관리지역
     data.loc[data['rgnl_ar_nm'].str.contains('농림지역', na = False), 'rgnl_ar_nm'] = 5  # 농림지역
     data.loc[data['rgnl_ar_nm'].str.contains('자연환경보전지역', na = False), 'rgnl_ar_nm'] = 6  # 자연환경보전지역
@@ -176,7 +170,6 @@ def lnd_us_sttn_nm_modi1(data) :
         else :
             ind.append(i)
     data.lnd_us_sttn_nm = ind
-    return data
 
 def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isna()) & (data['jmk'] == '목'), 'lnd_us_sttn_nm'] = '임야'
@@ -200,108 +193,21 @@ def lnd_us_sttn_nm_modi2(data) :
     data.loc[(data['lnd_us_sttn_nm'].isnull()) & (data['bldng_us_clssfctn'] == '공공용'), 'lnd_us_sttn_nm'] = '공공용지'
     return data
 
+
 def emd_nm_modi(data) :
     data['emd_nm'] = data['emd_nm'].astype(str).apply(lambda x : x[4:] if x[:4]=='경상남도' else x )
     data['emd_nm_big'] = data['emd_nm'].apply(lambda x : x.split()[0] if x.split()[0]!='창원시' else x.split()[0]+x.split()[1])
     data['emd_nm_small'] = data['emd_nm'].apply(lambda x : x.split()[1] if (x.split()[0]!='창원시') & (x!='nan') else x)
     data['emd_nm_small'] = data['emd_nm_small'].apply(lambda x : x.split()[2] if x.split()[0]=='창원시' else x )
-    return data
 
 def hm_cnt_modi(data) :
     hm_cnt_mean = round(data.groupby('emd_nm_small')['hm_cnt'].mean())
     for i in range(0,len(hm_cnt_mean)) :
         data.loc[(data['hm_cnt'].isnull()) & (data['emd_nm_small'] == hm_cnt_mean.keys()[i]), 'hm_cnt'] = hm_cnt_mean.values[i]
-    return data
 
 def wnd_modi(data) :
-<<<<<<< HEAD
-    data=data.drop(['wnd_spd','wnd_drctn'], axis=1)
-    return data
-=======
     data=data.drop(['wnd_spd','wnd_drctn'])
 
-def hmdt_modi(data) :
-    data=data.sort_values(by='dt_of_fr')   
-    data['hmdt']=data['hmdt'].fillna(method='bfill')
-
-<<<<<<< HEAD
-
-<<<<<<< HEAD
 def prcpttn_modi(data) :
     data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
     data['prcpttn'].fillna(0)
-=======
-#건물 승인 연도별 시각화
-data['blng_y']=data.loc[:,'dt_of_athrztn'].astype('str').str[:4]
-data['blng_y']=data['blng_y'].astype('int')
-data['bldng_y']=data['blng_y'].apply(lambda x: 1960 if (x>1959) & (x<1970) else x)
-data['blng_y']=data['blng_y'].apply(lambda x: 1970 if (x>1969) & (x<1980) else x)
-data['blng_y']=data['blng_y'].apply(lambda x: 1980 if (x>1979) & (x<1990) else x)
-data['blng_y']=data['blng_y'].apply(lambda x: 1990 if (x>1989) & (x<2000) else x)
-data['blng_y']=data['blng_y'].apply(lambda x: 2000 if (x>1999) & (x<2010) else x)
-data['blng_y']=data['blng_y'].apply(lambda x: 2010 if (x>2009) & (x<2020) else x)
-
-d1=data[['blng_y','fr_yn']]
-d2=d1.set_index('blng_y')
-
-d1['fr_yn']=np.where(d1.fr_yn=='Y',1,0)
-d1=d1.pivot_table(index='blng_y', aggfunc='sum')
-d2=d1.pivot_table(index='blng_y',aggfunc='sum')
-
-d2.plot()
-plt.xlim([1950,2020])
-
-#계절별 화재빈도 시각화
-df1=data[['fr_yn','season']]
-df2=df1.set_index('season')
-
-df1['fr_yn1']=np.where(df1.fr_yn=='Y',1,0)
-df1=df1.drop('fr_yn',axis=1)
-
-df2=df1.pivot_table(index='season', aggfunc='sum')
-df2.plot.bar()
-
-
-#건물용도별 화재 시각화
-da1=data[['bldng_us2','fr_yn']]
-da1['fr_yn1']=np.where(da1.fr_yn=='Y',1,0)
-da1.drop('fr_yn',axis=1)
-da2=da1.pivot_table(index='bldng_us2', aggfunc='sum')
-da2.plot.barh()
-
-#건물구조별 화재 시각화
-dq1=data[['bldng_archtctr2','fr_yn']]
-dq1['fr_yn1']=np.where(dq1.fr_yn=='Y',1,0)
-dq1=dq1.drop('fr_yn',axis=1)
-dq2=dq1.pivot_table(index='bldng_archtctr2', aggfunc='sum')
-dq2.plot.barh()
-
-
-#건물 용도명 화재 시각화
-dw1=data[['bldng_us_clssfctn','fr_yn']]
-dw1['fr_yn1']=np.where(dw1.fr_yn=='Y',1,0)
-dw1=dw1.drop('fr_yn',axis=1)
-dw2=dw1.pivot_table(index='bldng_us_clssfctn', aggfunc='sum')
-dw2.plot.barh()
-
-
-#건물면적 범위 화재 시각화 
-
-data['bldng_ar1']=data['bldng_ar1'].astype('int')
-data['bldng_ar1']=data['bldng_ar'].apply(lambda x: 100 if (x<101) else x)
-data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 300 if (x>101) & (x<301)   else x)
-data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 600 if (x>301) & (x<601)   else x)
-data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 1000 if (x>601) & (x<1001) else x)
-data['bldng_ar1']=data['bldng_ar1'].apply(lambda x: 1000 if(x>1001) &(x>1000)  else x)
->>>>>>> 258300b2084fb65b6b8ec53676f268519bd4dddf
-
-def prcpttn_modi(data) :
-    data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
-<<<<<<< HEAD
-    data['prcpttn'] = data['prcpttn'].fillna(0)
-    return data
-=======
-    data['prcpttn'].fillna(0)
->>>>>>> 70963641c1583e3af16f2ccb36401e431262ae5e
->>>>>>> 5fa407b2307e9f146a6741a2c0fdce456ba8ab53
->>>>>>> 258300b2084fb65b6b8ec53676f268519bd4dddf
