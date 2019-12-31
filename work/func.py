@@ -131,6 +131,7 @@ def rgnl_ar_nm_modi(data) :
     data.loc[data['rgnl_ar_nm'].str.contains('상업지역', na = False), 'rgnl_ar_nm'] = 1  # 상업지역
     data.loc[data['rgnl_ar_nm'].str.contains('공업지역', na = False), 'rgnl_ar_nm'] = 2  # 공업지역
     data.loc[data['rgnl_ar_nm'].str.contains('녹지지역', na = False), 'rgnl_ar_nm'] = 3  # 녹지지역
+    data.loc[data['rgnl_ar_nm'].str.contains('개발제한구역', na = False), 'rgnl_ar_nm'] = 3  # 녹지지역
     data.loc[data['rgnl_ar_nm'].str.contains('관리지역', na = False), 'rgnl_ar_nm'] = 4  # 관리지역
     data.loc[data['rgnl_ar_nm'].str.contains('농림지역', na = False), 'rgnl_ar_nm'] = 5  # 농림지역
     data.loc[data['rgnl_ar_nm'].str.contains('자연환경보전지역', na = False), 'rgnl_ar_nm'] = 6  # 자연환경보전지역
@@ -222,4 +223,6 @@ def hmdt_modi(data) :
     data['hmdt']=data['hmdt'].fillna(method='bfill')
 
 
-
+def prcpttn_modi(data) :
+    data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
+    data['prcpttn'].fillna(0)
