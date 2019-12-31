@@ -218,6 +218,9 @@ def hmdt_modi(data) :
     data['hmdt']=data['hmdt'].fillna(method='bfill')
 
 
+
+
+
 def wnd_modi(data) :
     data=data.drop(['wnd_spd','wnd_drctn'], axis=1)
     return data
