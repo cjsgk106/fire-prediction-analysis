@@ -214,8 +214,7 @@ def hm_cnt_modi(data) :
     return data
 
 def wnd_modi(data) :
-    data=data.drop(['wnd_spd','wnd_drctn'], axis=1)
-    return data
+    data=data.drop(['wnd_spd','wnd_drctn'])
 
 def prcpttn_modi(data) :
     data.loc[data['hmdt']>89,'prcpttn']=data.loc[data['hmdt']>89,'prcpttn'].fillna(2.3) 
