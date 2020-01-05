@@ -4,7 +4,7 @@ And a predictive model was developed after data wrangling and preprocessing.
 
 ## Motivation
 It was a Kaggle-like competition held by Korea Land and Housing Corporation.
-As the number of fire outbreaks increases and thus it produces loss of lives, this topic appealed to us to conduct an analysis in order to prevent such damage.
+As the number of fire outbreaks increases and thus it produces loss of lives, this topic appealed to us to conduct a data analysis in order to prevent such damage.
 
 ## Code Style
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
